@@ -9,13 +9,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
 
-	@Value("file:///C:/Users/ImD/Desktop/SpringOauth2.0/jwt/src/main/resources/upload/")
+	@Value("/app/resources/upload/")
 	private String uploadFolderPath;
 	
 	@Value("/upload/**")
 	private String getUploadPath;
 	
-	@Value("file:///C:/Users/ImD/Desktop/SpringOauth2.0/jwt/src/main/resources/upload/banners")
+	@Value("/app/resources/upload/banners")
 	private String bannersFolderPath;
 	
 	@Value("/upload/banners/**")
