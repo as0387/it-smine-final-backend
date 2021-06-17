@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
-	
+
 	@Value("file:///C:/Users/ImD/Desktop/SpringOauth2.0/jwt/src/main/resources/upload/")
 	private String uploadFolderPath;
 	
@@ -24,6 +24,8 @@ public class WebConfig implements WebMvcConfigurer{
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		
+		 String path = System.getProperty("user.dir");
+		System.out.println(path);
 		if (getUploadPath != null) {
 			registry.addResourceHandler(getUploadPath)
 			.addResourceLocations(uploadFolderPath);
