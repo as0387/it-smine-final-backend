@@ -1,0 +1,131 @@
+package com.dongs.jwt.web;
+
+import java.io.File;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.dongs.jwt.config.auth.PrincipalDetails;
+import com.dongs.jwt.domain.post.MD5Generator;
+import com.dongs.jwt.domain.post.Post;
+import com.dongs.jwt.dto.PhotoDto;
+import com.dongs.jwt.service.PhotoService;
+import com.dongs.jwt.service.PostService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class PostController {
+
+	private final PostService postService;
+	private final PhotoService photoService;
+
+	// 모두 접근 가능
+	@GetMapping({ "/products" })
+	public ResponseEntity<?> home(
+			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		return new ResponseEntity<Page<Post>>(postService.글목록(pageable), HttpStatus.OK);
+	}
+
+	@GetMapping("/products/{id}")
+	public ResponseEntity<?> detail(@PathVariable int id) {
+		return new ResponseEntity<Post>(postService.글상세(id), HttpStatus.OK);
+	}
+
+	// JWT 토큰만 있으면 접근 가능
+	@PostMapping("/post")
+	public ResponseEntity<?> save(@RequestBody Post post, @AuthenticationPrincipal PrincipalDetails principal) {
+		postService.글쓰기(post, principal.getUser());
+		return new ResponseEntity<String>("ok", HttpStatus.CREATED);
+	}
+
+	@PostMapping("/image")
+    public String write(@RequestParam("file") MultipartFile files) {
+		String imageUrl = null;
+        try {
+            String origFilename = files.getOriginalFilename();
+            
+         // 파일의 확장자 추출
+            String originalFileExtension = null;
+            String contentType = files.getContentType();
+
+
+            // 확장자가 jpeg, png인 파일들만 받아서 처리
+             if(contentType.contains("image/jpeg"))
+                 originalFileExtension = ".jpg";
+             else if(contentType.contains("image/png"))
+                 originalFileExtension = ".png";
+             
+             String filename = new MD5Generator(origFilename).toString() + System.nanoTime()+ originalFileExtension;
+            
+            /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
+            String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\upload";
+            /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
+            if (!new File(savePath).exists()) {
+                try{
+                    new File(savePath).mkdir();
+                }
+                catch(Exception e){
+                    e.getStackTrace();
+                }
+            }
+            String filePath = savePath + "\\" + filename;
+            imageUrl = "/upload/" + filename;
+            files.transferTo(new File(filePath));
+
+            PhotoDto photoDto = new PhotoDto();
+            photoDto.setOrigFilename(origFilename);
+            photoDto.setFilename(filename);
+            photoDto.setImageUrl(imageUrl);
+
+            photoService.saveFile(photoDto);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return imageUrl;
+    }
+
+	// JWT 토큰으로 동일인 체크 후 접근 가능
+	@DeleteMapping("/post/{id}")
+	public ResponseEntity<?> delete(@PathVariable int id, @AuthenticationPrincipal PrincipalDetails principal) {
+		int result = postService.글삭제(id, principal.getUser());
+
+		if (result == 1) {
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
+		}
+	}
+
+	// JWT 토큰으로 동일인 체크 후 접근 가능
+	@PutMapping("/post/{id}")
+	public ResponseEntity<?> update(@RequestBody Post post, @PathVariable int id,
+			@AuthenticationPrincipal PrincipalDetails principal) {
+		int result = postService.글수정(post, id, principal.getUser());
+
+		if (result == 1) {
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
+		}
+	}
+
+}
