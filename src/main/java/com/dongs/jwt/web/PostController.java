@@ -42,6 +42,8 @@ public class PostController {
 	@GetMapping({ "/products" })
 	public ResponseEntity<?> home(
 			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+		 String path = System.getProperty("user.dir");
+		 System.out.println(path);
 		return new ResponseEntity<Page<Post>>(postService.글목록(pageable), HttpStatus.OK);
 	}
 
@@ -58,7 +60,7 @@ public class PostController {
 	}
 
 	@PostMapping("/image")
-    public String write(@RequestParam("file") MultipartFile files) {
+    public String write(@RequestParam("image") MultipartFile files) {
 		String imageUrl = null;
         try {
             String origFilename = files.getOriginalFilename();
@@ -76,6 +78,9 @@ public class PostController {
              
              String filename = new MD5Generator(origFilename).toString() + System.nanoTime()+ originalFileExtension;
             
+             
+    		 String path = System.getProperty("user.dir");
+    		 System.out.println(path);
             /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
             String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\upload";
             /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */

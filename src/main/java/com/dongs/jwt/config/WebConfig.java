@@ -8,14 +8,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
-
-	@Value("/app/resources/upload/")
+	
+	@Value("file:///C:/Users/ImD/Desktop/final_itsmine_prj/it'smine_final_backend/ItsminePrj_final/src/main/resources/upload/")
 	private String uploadFolderPath;
 	
 	@Value("/upload/**")
 	private String getUploadPath;
 	
-	@Value("/app/resources/upload/banners")
+	@Value("file:///C:/Users/ImD/Desktop/final_itsmine_prj/it'smine_final_backend/ItsminePrj_final/src/main/resources/upload/banners/")
 	private String bannersFolderPath;
 	
 	@Value("/upload/banners/**")

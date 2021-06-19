@@ -21,6 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 import com.dongs.jwt.config.filter.MyCorsFilter;
 import com.dongs.jwt.config.jwt.JwtAuthenticationFilter;
 import com.dongs.jwt.config.jwt.JwtAuthorizationFilter;
+import com.dongs.jwt.config.oauth.PrincipalOauth2UserService;
 import com.dongs.jwt.repository.UserRepository;
 
 @Configuration
@@ -33,6 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private CorsFilter corsFilter;
+	
+	@Autowired
+	private PrincipalOauth2UserService principalOauth2UserService;
 
 	// 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
 	@Bean
@@ -50,6 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						UsernamePasswordAuthenticationFilter.class)// AythenticationManager
 				.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))// AythenticationManager
 				.authorizeRequests().antMatchers("/post/**").access("hasRole('ROLE_USER')").anyRequest().permitAll();
+//				.and()
+//				.oauth2Login()
+//				.userInfoEndpoint()
+//				.userService(principalOauth2UserService);
 	}
 
 }

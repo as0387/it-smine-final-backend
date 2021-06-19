@@ -20,8 +20,6 @@ public class MyCorsFilter implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		System.out.println("CORS 필터 작동");
-		 String path = System.getProperty("user.dir");
-			System.out.println(path);
 		HttpServletResponse resp = (HttpServletResponse) response;
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		resp.setHeader("Access-Control-Allow-Methods", "*");
