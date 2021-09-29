@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class NomalAuctionPost {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -47,20 +47,17 @@ public class Post {
 	private User user;
 	
 	@Column
-	private int price;
+    private String imageUrl;
 	
+	 @Column(columnDefinition = "int default 1")
+	private int type;
+	 
 	 @Column
 	 private int bid;
 	 private int bidLimit;
 	 private int bidderId;
 	 private int endTime;
-	
-	@Column
-    private String imageUrl;
-	
-	 @Column(columnDefinition = "int default 0")
-	private int type;
-
+	 
 	@CreationTimestamp
 	private Timestamp createDate;
 	

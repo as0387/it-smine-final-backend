@@ -1,6 +1,7 @@
 package com.dongs.jwt.config.filter;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import com.dongs.jwt.config.jwt.JwtProps;
 
 public class MyCorsFilter implements Filter{
 

@@ -12,7 +12,9 @@ public class KakaoUserInfo implements OAuth2UserInfo{
 
 	@Override
 	public String getProviderId() {
-		return attributes.get("id").toString();
+		
+		Map<String, Object> temp = (Map)attributes.get("profile");
+		return temp.get("id").toString();
 	}
 
 	@Override
@@ -22,13 +24,16 @@ public class KakaoUserInfo implements OAuth2UserInfo{
 	
 	@Override
 	public String getEmail() {
-		Map<String, Object> temp = (Map)attributes.get("kakao_account");
-		return (String)temp.get("email");
+		Map<String, Object> temp = (Map)attributes.get("profile");
+		Map<String, Object> temp2 = (Map)temp.get("kakao_account");
+		return (String)temp2.get("email");
 	}
 
 	@Override
 	public String getName() {
-		Map<String, Object> temp = (Map)attributes.get("properties");
-		return (String)temp.get("nickname");
+		Map<String, Object> temp = (Map)attributes.get("profile");
+		Map<String, Object> temp2 = (Map)temp.get("kakao_account");
+		Map<String, Object> temp3 = (Map)temp.get("profile");
+		return (String)temp3.get("nickname");
 		}
 }

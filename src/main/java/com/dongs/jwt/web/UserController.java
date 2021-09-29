@@ -29,9 +29,6 @@ public class UserController {
 	private final UserService userService;
 	private final HttpSession session;
 	
-	// (1) 로그인 -  필터에 등록함.
-	
-	// (2) 회원가입
 	@PostMapping("/join")
 	public ResponseEntity<?> join(@RequestBody User user) {
 		System.out.println("회원가입가즈아아아");
@@ -39,10 +36,4 @@ public class UserController {
 		return new ResponseEntity<String>("ok", HttpStatus.CREATED);
 	}
 	
-	// (3) 로그아웃
-	@GetMapping("/logout")
-	public ResponseEntity<?> logout() {
-		session.invalidate();
-		return new ResponseEntity<String>("ok", HttpStatus.OK);
-	}
 }

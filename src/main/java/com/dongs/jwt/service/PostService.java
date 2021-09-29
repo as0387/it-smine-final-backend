@@ -5,8 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dongs.jwt.domain.post.NomalAuctionPost;
 import com.dongs.jwt.domain.post.Post;
 import com.dongs.jwt.domain.user.User;
+import com.dongs.jwt.repository.NomalAuctionPostRepository;
 import com.dongs.jwt.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,12 +18,19 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private final PostRepository postRepository;
+	private final NomalAuctionPostRepository nomalPostRepository;
 	
 	@Transactional
 	public void 글쓰기(Post post, User principal) {
 		post.setUser(principal);
 		postRepository.save(post);
 	}
+	
+//	@Transactional
+//	public void 경매상품등록(NomalAuctionPost post, User principal) {
+//		post.setUser(principal);
+//		nomalPostRepository.save(post);
+//	}
 	
 	@Transactional(readOnly = true)
 	public Page<Post> 글목록(Pageable pageable) {
@@ -40,11 +49,28 @@ public class PostService {
 		if(postEntity.getUser().getId() == principal.getId()) {
 			postEntity.setTitle(post.getTitle());
 			postEntity.setDescription(post.getDescription());
+			postEntity.setPrice(post.getPrice());
 			return 1;
 		}else {
 			return 0;
 		}
 	}
+	
+	@Transactional
+	public int 입찰하기(Post post, int id) {
+		Post postEntity = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));
+			postEntity.setBid(post.getBid());
+			postEntity.setBidderId(post.getBidderId());
+			return 1;
+	}
+	
+//	@Transactional
+//	public int 입찰하기(NomalAuctionPost post, int id) {
+//		NomalAuctionPost postEntity = nomalPostRepository.findById(id).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));
+//			postEntity.setBid(post.getBid());
+//			postEntity.setBidderId(post.getBidderId());
+//			return 1;
+//	}
 	
 	@Transactional
 	public int 글삭제(int id, User principal) {

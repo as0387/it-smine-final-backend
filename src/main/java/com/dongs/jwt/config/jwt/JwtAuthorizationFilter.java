@@ -2,6 +2,7 @@ package com.dongs.jwt.config.jwt;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -33,7 +34,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-
 		System.out.println("JwtAuthorizationFilter 작동");
 		String jwtToken = request.getHeader(JwtProps.header);
 		System.out.println("jwtToken: " + jwtToken);

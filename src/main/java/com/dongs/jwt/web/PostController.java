@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dongs.jwt.config.auth.PrincipalDetails;
 import com.dongs.jwt.domain.post.MD5Generator;
+import com.dongs.jwt.domain.post.NomalAuctionPost;
 import com.dongs.jwt.domain.post.Post;
 import com.dongs.jwt.dto.PhotoDto;
 import com.dongs.jwt.service.PhotoService;
@@ -41,7 +42,7 @@ public class PostController {
 	// 모두 접근 가능
 	@GetMapping({ "/products" })
 	public ResponseEntity<?> home(
-			@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		 String path = System.getProperty("user.dir");
 		 System.out.println(path);
 		return new ResponseEntity<Page<Post>>(postService.글목록(pageable), HttpStatus.OK);
@@ -126,6 +127,16 @@ public class PostController {
 			@AuthenticationPrincipal PrincipalDetails principal) {
 		int result = postService.글수정(post, id, principal.getUser());
 
+		if (result == 1) {
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
+		}
+	}
+	
+	@PutMapping("/bidPost/{id}")
+	public ResponseEntity<?> bidPost(@RequestBody Post post, @PathVariable int id) {
+		int result = postService.입찰하기(post, id);
 		if (result == 1) {
 			return new ResponseEntity<String>("ok", HttpStatus.OK);
 		} else {
