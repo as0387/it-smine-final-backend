@@ -10,6 +10,7 @@ import com.dongs.jwt.domain.post.Post;
 import com.dongs.jwt.domain.user.User;
 import com.dongs.jwt.repository.NomalAuctionPostRepository;
 import com.dongs.jwt.repository.PostRepository;
+import com.dongs.jwt.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
 	private final PostRepository postRepository;
-	private final NomalAuctionPostRepository nomalPostRepository;
+	private final UserRepository userRepository;
 	
 	@Transactional
 	public void 글쓰기(Post post, User principal) {
@@ -26,11 +27,11 @@ public class PostService {
 		postRepository.save(post);
 	}
 	
-//	@Transactional
-//	public void 경매상품등록(NomalAuctionPost post, User principal) {
-//		post.setUser(principal);
-//		nomalPostRepository.save(post);
-//	}
+	@Transactional
+	public void 일반경매상품등록(Post post, User principal) {
+		post.setUser(principal);
+		postRepository.save(post);
+	}
 	
 	@Transactional(readOnly = true)
 	public Page<Post> 글목록(Pageable pageable) {
@@ -56,21 +57,22 @@ public class PostService {
 		}
 	}
 	
-	@Transactional
-	public int 입찰하기(Post post, int id) {
-		Post postEntity = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));
-			postEntity.setBid(post.getBid());
-			postEntity.setBidderId(post.getBidderId());
-			return 1;
-	}
-	
 //	@Transactional
-//	public int 입찰하기(NomalAuctionPost post, int id) {
-//		NomalAuctionPost postEntity = nomalPostRepository.findById(id).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));
+//	public int 입찰하기(Post post, int id) {
+//		Post postEntity = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));
 //			postEntity.setBid(post.getBid());
 //			postEntity.setBidderId(post.getBidderId());
 //			return 1;
 //	}
+	
+	@Transactional
+	public int 입찰하기(Post post, int id) {
+		Post postEntity = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));
+		User BidderEntity = userRepository.findById(post.getBidderId()).orElseThrow(()-> new IllegalArgumentException(id+"는 존재하지 않습니다."));;
+			postEntity.setBid(post.getBid());
+			postEntity.setBidder(BidderEntity);
+			return 1;
+	}
 	
 	@Transactional
 	public int 글삭제(int id, User principal) {

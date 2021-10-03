@@ -16,26 +16,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.dongs.jwt.config.jwt.JwtProps;
+import com.dongs.jwt.domain.post.NomalAuctionPost;
+import com.dongs.jwt.repository.NomalAuctionPostRepository;
 
-public class MyCorsFilter implements Filter{
+public class MyCorsFilter2 implements Filter{
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("MyCORS 필터 작동");
-		HttpServletResponse resp = (HttpServletResponse) response;
-		resp.setHeader("Access-Control-Allow-Origin", "*");
-		resp.setHeader("Access-Control-Allow-Methods", "*");
-		resp.setHeader("Access-Control-Allow-Headers", "*");
-		// 해당 헤더가 없으면 아래 7가지의 header값만 응답할 수 있다. 
-		// Cache-Control
-		//Content-Language
-		//Content-Length
-		//Content-Type
-		//Expires
-		//Last-Modified
-		//Pragma
-		resp.setHeader("Access-Control-Expose-Headers", "*");
+		NomalAuctionPostRepository n;
+		
+		//앤드타입으로 구분해서 타입이 1일경우 경매 시퀀스 실행해줌
+		//n.findById(1);//실행안된 게시물 찾아서
+		
+		//경매 시퀀스 로직 실행 (아래쪽으로 코딩)
 		
 		chain.doFilter(request, response);
 	}

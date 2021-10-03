@@ -59,6 +59,12 @@ public class PostController {
 		postService.글쓰기(post, principal.getUser());
 		return new ResponseEntity<String>("ok", HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/nomalAuctionPost")
+	public ResponseEntity<?> auctionSave(@RequestBody Post post, @AuthenticationPrincipal PrincipalDetails principal) {
+		postService.일반경매상품등록(post, principal.getUser());
+		return new ResponseEntity<String>("ok", HttpStatus.CREATED);
+	}
 
 	@PostMapping("/image")
     public String write(@RequestParam("image") MultipartFile files) {

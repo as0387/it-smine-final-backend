@@ -37,6 +37,8 @@ public class NomalAuctionPost {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
+	@Column
 	private String title;
 	
 	@Column(columnDefinition = "TEXT")
@@ -49,14 +51,21 @@ public class NomalAuctionPost {
 	@Column
     private String imageUrl;
 	
-	 @Column(columnDefinition = "int default 1")
+	@Column(columnDefinition = "int default 1")
 	private int type;
+	
+	@Column(columnDefinition = "int default 1")
+	private int endType;
 	 
 	 @Column
 	 private int bid;
-	 private int bidLimit;
 	 private int bidderId;
+	 private int bidLimit;
 	 private int endTime;
+	 
+	@JoinColumn(name = "bidder")
+	@ManyToOne
+	 private User bidder;
 	 
 	@CreationTimestamp
 	private Timestamp createDate;
