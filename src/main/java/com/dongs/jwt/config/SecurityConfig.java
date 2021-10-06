@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilterAfter(new JwtAuthenticationFilter(authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class)// AythenticationManager
 				.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))// AythenticationManager
-				.authorizeRequests().antMatchers("/post/**").access("hasRole('ROLE_USER')").anyRequest().permitAll();
+				.authorizeRequests().antMatchers("/post/**","/user-**", "/t-history/**","/bidPost/**").access("hasRole('ROLE_USER')").anyRequest().permitAll();
 //				.and()
 //				.oauth2Login()
 //				.userInfoEndpoint()

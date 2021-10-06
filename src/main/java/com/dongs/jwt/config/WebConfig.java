@@ -15,11 +15,19 @@ public class WebConfig implements WebMvcConfigurer{
 	@Value("/upload/**")
 	private String getUploadPath;
 	
-	@Value("file:///C:/Users/ImD/Desktop/졸업작품/final_itsmine_prj/it'smine_final_backend/ItsminePrj_final/src/main/resources/upload/banners/")
-	private String bannersFolderPath;
 	
-	@Value("/upload/banners/**")
-	private String getBannerPath;
+//	@Value("file:///C:/Users/ImD/Desktop/졸업작품/final_itsmine_prj/it'smine_final_backend/ItsminePrj_final/src/main/resources/upload/banners/")
+//	private String bannersFolderPath;
+//	
+//	@Value("/upload/banners/**")
+//	private String getBannerPath;
+	
+	
+	@Value("file:///C:/Users/ImD/Desktop/졸업작품/final_itsmine_prj/it'smine_final_backend/ItsminePrj_final/src/main/resources/upload/profile/")
+	private String profileFolderPath;
+	
+	@Value("/upload/profile/**")
+	private String getProfilePath;
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -27,9 +35,12 @@ public class WebConfig implements WebMvcConfigurer{
 		if (getUploadPath != null) {
 			registry.addResourceHandler(getUploadPath)
 			.addResourceLocations(uploadFolderPath);
-		} else {
-			registry.addResourceHandler(getBannerPath)
-			.addResourceLocations(bannersFolderPath);
+		} /*
+			 * else if(getBannerPath != null) { registry.addResourceHandler(getBannerPath)
+			 * .addResourceLocations(bannersFolderPath); }
+			 */ else {
+			registry.addResourceHandler(getProfilePath)
+			.addResourceLocations(profileFolderPath);
 		}
 		
 	}

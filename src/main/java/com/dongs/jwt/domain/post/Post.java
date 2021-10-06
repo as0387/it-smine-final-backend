@@ -68,6 +68,9 @@ public class Post {
 	 private int bidLimit;
 	 
 	 @Column
+	 private int minBidUnit;
+	 
+	 @Column
 	 private int endTime;
 	 
 	@JoinColumn(name = "bidder")

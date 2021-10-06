@@ -42,7 +42,7 @@ public class PostController {
 	// 모두 접근 가능
 	@GetMapping({ "/products" })
 	public ResponseEntity<?> home(
-			@PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {//페이징 안할거면 지우던가
 		 String path = System.getProperty("user.dir");
 		 System.out.println(path);
 		return new ResponseEntity<Page<Post>>(postService.글목록(pageable), HttpStatus.OK);
@@ -66,6 +66,45 @@ public class PostController {
 		return new ResponseEntity<String>("ok", HttpStatus.CREATED);
 	}
 
+	// JWT 토큰으로 동일인 체크 후 접근 가능
+	@DeleteMapping("/post/{id}")
+	public ResponseEntity<?> delete(@PathVariable int id, @AuthenticationPrincipal PrincipalDetails principal) {
+		int result = postService.글삭제(id, principal.getUser());
+
+		if (result == 1) {
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
+		}
+	}
+
+	// JWT 토큰으로 동일인 체크 후 접근 가능
+	@PutMapping("/post/{id}")
+	public ResponseEntity<?> update(@RequestBody Post post, @PathVariable int id,
+			@AuthenticationPrincipal PrincipalDetails principal) {
+		int result = postService.글수정(post, id, principal.getUser());
+
+		if (result == 1) {
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
+		}
+	}
+	
+	@PutMapping("/bidPost/{id}")
+	public ResponseEntity<?> bidPost(@RequestBody Post post, @PathVariable int id) {
+		int result = postService.입찰하기(post, id);
+		if (result == 1) {
+			return new ResponseEntity<String>("ok", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
+		}
+	}
+	
+	
+	
+	//image관련 mapping
+	
 	@PostMapping("/image")
     public String write(@RequestParam("image") MultipartFile files) {
 		String imageUrl = null;
@@ -114,40 +153,56 @@ public class PostController {
         }
         return imageUrl;
     }
-
-	// JWT 토큰으로 동일인 체크 후 접근 가능
-	@DeleteMapping("/post/{id}")
-	public ResponseEntity<?> delete(@PathVariable int id, @AuthenticationPrincipal PrincipalDetails principal) {
-		int result = postService.글삭제(id, principal.getUser());
-
-		if (result == 1) {
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
-		}
-	}
-
-	// JWT 토큰으로 동일인 체크 후 접근 가능
-	@PutMapping("/post/{id}")
-	public ResponseEntity<?> update(@RequestBody Post post, @PathVariable int id,
-			@AuthenticationPrincipal PrincipalDetails principal) {
-		int result = postService.글수정(post, id, principal.getUser());
-
-		if (result == 1) {
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
-		}
-	}
 	
-	@PutMapping("/bidPost/{id}")
-	public ResponseEntity<?> bidPost(@RequestBody Post post, @PathVariable int id) {
-		int result = postService.입찰하기(post, id);
-		if (result == 1) {
-			return new ResponseEntity<String>("ok", HttpStatus.OK);
-		} else {
-			return new ResponseEntity<String>("fail", HttpStatus.FORBIDDEN);
-		}
-	}
+
+	
+	@PostMapping("/image/profile")
+    public String writeProfile(@RequestParam("image") MultipartFile files) {
+		String imageUrl = null;
+        try {
+            String origFilename = files.getOriginalFilename();
+            
+         // 파일의 확장자 추출
+            String originalFileExtension = null;
+            String contentType = files.getContentType();
+
+
+            // 확장자가 jpeg, png인 파일들만 받아서 처리
+             if(contentType.contains("image/jpeg"))
+                 originalFileExtension = ".jpg";
+             else if(contentType.contains("image/png"))
+                 originalFileExtension = ".png";
+             
+             String filename = new MD5Generator(origFilename).toString() + System.nanoTime()+ originalFileExtension;
+            
+             
+    		 String path = System.getProperty("user.dir");
+    		 System.out.println(path);
+            /* 실행되는 위치의 'files' 폴더에 파일이 저장됩니다. */
+            String savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\upload\\profile";
+            /* 파일이 저장되는 폴더가 없으면 폴더를 생성합니다. */
+            if (!new File(savePath).exists()) {
+                try{
+                    new File(savePath).mkdir();
+                }
+                catch(Exception e){
+                    e.getStackTrace();
+                }
+            }
+            String filePath = savePath + "\\" + filename;
+            imageUrl = "/upload/profile/" + filename;
+            files.transferTo(new File(filePath));
+
+            PhotoDto photoDto = new PhotoDto();
+            photoDto.setOrigFilename(origFilename);
+            photoDto.setFilename(filename);
+            photoDto.setImageUrl(imageUrl);
+
+            photoService.saveFile(photoDto);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return imageUrl;
+    }
 
 }

@@ -40,6 +40,9 @@ public class User {
 	@Column
 	private String providerId;
 	
+	@Column
+    private String profileImageUrl;
+	
 	@CreationTimestamp
 	private Timestamp createDate;
 }

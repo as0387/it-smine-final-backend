@@ -40,6 +40,8 @@ public class JwtCreateController {
 					.username(googleUser.getProvider()+"_"+googleUser.getProviderId())
 					.password(bCryptPasswordEncoder.encode("잇츠마인일까나"))
 					.email(googleUser.getEmail())
+					.nickname(googleUser.getName())
+					.profileImageUrl(googleUser.getProfileUrl())
 					.provider(googleUser.getProvider())
 					.providerId(googleUser.getProviderId())
 					.roles("ROLE_USER")
@@ -64,6 +66,7 @@ public class JwtCreateController {
 		System.out.println(data);
 		OAuth2UserInfo kakaoUser = 
 				new KakaoUserInfo((Map<String, Object>)data);
+		System.out.println(kakaoUser.getName());
 		
 		User userEntity = 
 				userRepository.findByUsername(kakaoUser.getProvider()+"_"+kakaoUser.getProviderId());
@@ -73,6 +76,8 @@ public class JwtCreateController {
 					.username(kakaoUser.getProvider()+"_"+kakaoUser.getProviderId())
 					.password(bCryptPasswordEncoder.encode("잇츠마인일까나"))
 					.email(kakaoUser.getEmail())
+					.nickname(kakaoUser.getName())
+					.profileImageUrl(kakaoUser.getProfileUrl())
 					.provider(kakaoUser.getProvider())
 					.providerId(kakaoUser.getProviderId())
 					.roles("ROLE_USER")
