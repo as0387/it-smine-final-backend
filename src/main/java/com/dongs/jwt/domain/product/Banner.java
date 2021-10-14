@@ -1,4 +1,4 @@
-package com.dongs.jwt.domain.post;
+package com.dongs.jwt.domain.product;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

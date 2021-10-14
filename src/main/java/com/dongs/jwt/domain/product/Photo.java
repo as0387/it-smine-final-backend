@@ -1,4 +1,4 @@
-package com.dongs.jwt.domain.post;
+package com.dongs.jwt.domain.product;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,9 +24,6 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "postId")
-//    private Post post;
 
     @Column(nullable = false)
     private String origFilename;  // 파일 원본명
@@ -37,7 +34,10 @@ public class Photo {
     @Column(nullable = false)
     private String imageUrl;  // 파일 저장 경로
 
-//    private Long fileSize;
+    @JoinColumn(name = "postId")
+    @ManyToOne
+    private Post post;
+
 
     @Builder
     public Photo(Long id, String origFilename, String filename, String imageUrl) {
@@ -47,13 +47,4 @@ public class Photo {
         this.imageUrl = imageUrl;
     }
 
-//    // Board 정보 저장
-//    public void setPost(Post post){
-//        this.post = post;
-//
-//	// 게시글에 현재 파일이 존재하지 않는다면
-//        if(!post.getPhotos().contains(this))
-//            // 파일 추가
-//        	post.getPhotos().add(this);
-//    }
 }

@@ -1,4 +1,4 @@
-package com.dongs.jwt.domain.post;
+package com.dongs.jwt.domain.product;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

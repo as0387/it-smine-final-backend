@@ -1,6 +1,6 @@
 package com.dongs.jwt.dto;
 
-import com.dongs.jwt.domain.post.Photo;
+import com.dongs.jwt.domain.product.Photo;
 
 import lombok.Builder;
 import lombok.Data;

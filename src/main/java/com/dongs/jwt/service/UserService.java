@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.dongs.jwt.domain.post.Post;
+import com.dongs.jwt.domain.product.Post;
 import com.dongs.jwt.domain.user.User;
 import com.dongs.jwt.repository.UserRepository;
 
@@ -27,7 +27,7 @@ public class UserService {
 		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 		user.setPassword(encPassword);
 		user.setRoles("ROLE_USER");
-		user.setProfileImageUrl("/");
+		user.setProfileImageUrl("/upload/public/avatar.png");
 		userRepository.save(user);
 	}
 	

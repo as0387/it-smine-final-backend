@@ -1,15 +1,21 @@
 package com.dongs.jwt.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dongs.jwt.domain.post.NomalAuctionPost;
-import com.dongs.jwt.domain.post.Post;
+import com.dongs.jwt.domain.product.Photo;
+import com.dongs.jwt.domain.product.Post;
 import com.dongs.jwt.domain.user.User;
-import com.dongs.jwt.repository.NomalAuctionPostRepository;
+import com.dongs.jwt.dto.ReplySaveRequestDto;
+import com.dongs.jwt.repository.PhotoRepository;
 import com.dongs.jwt.repository.PostRepository;
+import com.dongs.jwt.repository.ReplyRepository;
 import com.dongs.jwt.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +26,8 @@ public class PostService {
 
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
+	private final PhotoRepository photoRepository;
+	private final ReplyRepository replyRepository;
 	
 	@Transactional
 	public void 글쓰기(Post post, User principal) {
@@ -28,9 +36,23 @@ public class PostService {
 	}
 	
 	@Transactional
-	public void 일반경매상품등록(Post post, User principal) {
-		post.setUser(principal);
-		postRepository.save(post);
+	public void 일반경매상품등록(Post post, Map<String, Object>  photoList, User principal) {
+		
+		List<Integer> fileIdList = (List<Integer>)photoList.get("fileIdList");
+		Post post2 = post;
+		post2.setPhotos(null);
+		List<Photo> photoEntityList = new ArrayList<Photo>();
+		for(int i : fileIdList) {
+			Number n = (Number)i;
+			Long i2 = n.longValue();
+			photoEntityList.add(photoRepository.findById(i2).orElseThrow(()-> new IllegalArgumentException(i2+"는 존재하지 않습니다.")));
+		}
+		for(Photo p : photoEntityList) {
+			p.setPost(post2);
+		}
+		post2.setUser(principal);
+		post2.setPhotos(photoEntityList);
+		postRepository.save(post2);
 	}
 	
 	@Transactional(readOnly = true)
@@ -84,5 +106,15 @@ public class PostService {
 		}else {
 			return 0;
 		}
+	}
+	
+	@Transactional
+	public void 댓글쓰기(ReplySaveRequestDto replySaveRequestDto) {
+		replyRepository.mSave(replySaveRequestDto.getUserId(), replySaveRequestDto.getPostId(), replySaveRequestDto.getContent());
+	}
+	
+	@Transactional
+	public void 댓글삭제하기(int replyId) {
+		replyRepository.deleteById(replyId);		
 	}
 }

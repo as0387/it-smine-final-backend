@@ -16,7 +16,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.dongs.jwt.config.jwt.JwtProps;
-import com.dongs.jwt.domain.post.NomalAuctionPost;
+import com.dongs.jwt.domain.product.NomalAuctionPost;
 import com.dongs.jwt.repository.NomalAuctionPostRepository;
 
 public class MyCorsFilter2 implements Filter{

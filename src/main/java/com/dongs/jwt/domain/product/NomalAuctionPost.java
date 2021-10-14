@@ -1,4 +1,4 @@
-package com.dongs.jwt.domain.post;
+package com.dongs.jwt.domain.product;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
